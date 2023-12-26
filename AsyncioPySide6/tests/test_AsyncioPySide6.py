@@ -4,7 +4,6 @@ import time
 from AsyncioPySide6.nvd.AsyncioPySide6 import AsyncioPySide6
 
 
-import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -35,14 +34,15 @@ class MainWindow(QMainWindow):
         self.label.setText(text)
 
 
+import sys
 class TestAsyncioPySide6(unittest.TestCase):
     @unittest.skipIf(not ("--AsyncioPySide6-gui-test" in sys.argv), reason="This test show GUI window")
     def test_runGUITask(self):
+        if not QApplication.instance():
+            app = QApplication(sys.argv)
+        else:
+            app = QApplication.instance()
         with AsyncioPySide6():
-            if not QApplication.instance():
-                app = QApplication(sys.argv)
-            else:
-                app = QApplication.instance()
             main_window = MainWindow()
             main_window.show()
 
@@ -60,6 +60,14 @@ class TestAsyncioPySide6(unittest.TestCase):
                 sum = sum + i
                 print(f"SUM([0..{i}]) = {sum}")
 
-        with AsyncioPySide6():
+        if not QApplication.instance():
+            app = QApplication(sys.argv)
+        else:
+            app = QApplication.instance()
+        with AsyncioPySide6.use_asyncio(use_dedicated_thread=True):
+            AsyncioPySide6.runTask(calculate_async(10))
+            time.sleep(2)
+
+        with AsyncioPySide6.use_asyncio(use_dedicated_thread=False):
             AsyncioPySide6.runTask(calculate_async(10))
             time.sleep(2)

@@ -43,10 +43,9 @@ class MainWindow(QMainWindow):
         self.label.setText(text)
 
 if __name__ == "__main__":
-    with AsyncioPySide6():
-        if not QApplication.instance():
-            app = QApplication(sys.argv)
-            main_window = MainWindow()
-            main_window.show()
-            app.exec()
+    app = QApplication(sys.argv)
+    with AsyncioPySide6.use_asyncio():
+        main_window = MainWindow()
+        main_window.show()
+        app.exec()
 ```
