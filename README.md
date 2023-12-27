@@ -36,11 +36,7 @@ class MainWindow(QMainWindow):
             await asyncio.sleep(0.1)
 
             sum = sum + i
-            AsyncioPySide6.invokeInGuiThread(self, lambda: self._update_label(f"SUM([0..{i}]) = {sum}"))
-
-    def _update_label(self, text):
-        """Updated GUI label, it must be ran in GUI thread"""
-        self.label.setText(text)
+            self.label.setText(text)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
