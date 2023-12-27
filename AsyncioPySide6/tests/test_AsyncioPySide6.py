@@ -4,7 +4,7 @@ import time
 from AsyncioPySide6.nvd.AsyncioPySide6 import AsyncioPySide6
 
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QMessageBox
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -70,4 +70,4 @@ class TestAsyncioPySide6(unittest.TestCase):
 
         with AsyncioPySide6.use_asyncio(use_dedicated_thread=False):
             AsyncioPySide6.runTask(calculate_async(10))
-            time.sleep(2)
+            QMessageBox.critical(None, 'Testing', 'Close this when it is done')

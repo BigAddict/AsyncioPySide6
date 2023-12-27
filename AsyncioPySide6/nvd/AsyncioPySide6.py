@@ -5,6 +5,10 @@ import typing
 
 from PySide6.QtCore import QThread, QObject, QTimer
 
+EVENT_LOOP_INTERVAL_SECS = 0.001
+EVENT_LOOP_IDLE_SLEEP_TIME_SECS = 0.001
+USE_DEDICATED_THREAD_DEFAULT_VALUE = False
+
 class AsyncioByThread(QThread):
     def __init__(self):
         super().__init__()
@@ -18,7 +22,7 @@ class AsyncioByThread(QThread):
 
     async def _event_loop(self):
         while not self.isShuttingDown:
-            await asyncio.sleep(1)
+            await asyncio.sleep(EVENT_LOOP_IDLE_SLEEP_TIME_SECS)
 
     def run_event_loop(self):
         self.start()
@@ -40,14 +44,14 @@ class AsyncioByTimer(QTimer):
 
         self.isShuttingDown = False
         self.timeout.connect(self._timer_timemout)
-        self.setInterval(10)        
+        self.setInterval(int(EVENT_LOOP_INTERVAL_SECS*1000))
 
 
     def _timer_timemout(self):
         self.loop.run_until_complete(self._event_loop())
 
     async def _event_loop(self):
-        await asyncio.sleep(1)
+        await asyncio.sleep(EVENT_LOOP_IDLE_SLEEP_TIME_SECS)
 
     def run_event_loop(self):
         self.start()
@@ -56,7 +60,6 @@ class AsyncioByTimer(QTimer):
         self.isShuttingDown = True
         self.stop()
 
-USE_DEDICATED_THREAD_DEFAULT_VALUE = True
 
 class AsyncioPySide6:
     """
