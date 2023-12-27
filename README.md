@@ -36,7 +36,8 @@ class MainWindow(QMainWindow):
             await asyncio.sleep(0.1)
 
             sum = sum + i
-            self.label.setText(text)
+            self.label.setText(f"SUM([0..{i}]) = {sum}")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
