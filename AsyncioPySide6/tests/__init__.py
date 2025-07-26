@@ -1,10 +1,21 @@
-import unittest
-from .test_AsyncioPySide6 import TestAsyncioPySide6
-from .test_config import TestAsyncioPySide6Config, TestConfigFunctions
+"""
+Test suite for AsyncioPySide6 with QtAsyncio integration.
 
-def suite():
-    test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestAsyncioPySide6))
-    test_suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestAsyncioPySide6Config))
-    test_suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestConfigFunctions))
-    return test_suite
+This package contains comprehensive tests for the refactored AsyncioPySide6
+implementation that uses QtAsyncio as the base while adding advanced features.
+
+Test Modules:
+- test_core.py: Core functionality tests
+- test_performance.py: Performance monitoring tests
+
+Usage:
+    python -m pytest AsyncioPySide6/tests/
+    python -m pytest AsyncioPySide6/tests/test_core.py
+    python -m pytest AsyncioPySide6/tests/test_performance.py
+"""
+
+# Test modules
+__all__ = [
+    'test_core',
+    'test_performance'
+]
