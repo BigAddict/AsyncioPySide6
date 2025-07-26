@@ -2,3 +2,4 @@
 /build
 /dist
 /AsyncioPySide6.egg-info
+.venv
