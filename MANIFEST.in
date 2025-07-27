@@ -1,0 +1,21 @@
+include README.md
+include LICENSE
+include requirements.txt
+include requirements-dev.txt
+include pyproject.toml
+include setup.py
+
+recursive-include pyside6_asyncplus *.py
+recursive-include examples *.py
+recursive-include docs *.rst *.md *.txt *.bat *.py *.css *.js *.html
+
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .venv
+global-exclude .pytest_cache
+global-exclude .mypy_cache
+global-exclude build
+global-exclude dist
+global-exclude *.egg-info 

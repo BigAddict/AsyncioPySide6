@@ -70,6 +70,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build/
 
 # PyBuilder
 .pybuilder/
@@ -185,5 +186,34 @@ coverage.xml
 bandit-report.json
 safety-report.json
 
+# Documentation build artifacts
+docs/build/
+docs/source/_build/
+
+# IDE and editor files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
 # CI/CD artifacts
 .github/workflows/*.log
+.github/workflows/*.yml.bak

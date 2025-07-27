@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Advanced Example - AsyncioPySide6 with QtAsyncio Integration.
+Advanced Example - pyside6-asyncplus with QtAsyncio Integration.
 
-This example demonstrates advanced usage of AsyncioPySide6 with QtAsyncio integration.
+This example demonstrates advanced usage of pyside6-asyncplus with QtAsyncio integration.
 It shows performance monitoring, health checks, progress tracking, and complex async patterns.
 """
 
@@ -17,14 +17,15 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import QTimer, QThread, QObject
 
-# Import our enhanced AsyncioPySide6
+# Import our enhanced pyside6-asyncplus
 sys.path.append('..')
-from AsyncioPySide6 import AsyncioPySide6, get_config, set_config, get_health_status
+from pyside6_asyncplus.app import app as async_app, run, run_with_progress, run_with_retry, invoke_in_gui_thread
+from pyside6_asyncplus import get_config, set_config, get_health_status
 
 
 class AdvancedExample(QMainWindow):
     """
-    Advanced example demonstrating AsyncioPySide6 with QtAsyncio integration.
+    Advanced example demonstrating pyside6-asyncplus with QtAsyncio integration.
     
     This example shows:
     - Performance monitoring and health checks
@@ -38,7 +39,7 @@ class AdvancedExample(QMainWindow):
     def __init__(self):
         """Initialize the advanced example window."""
         super().__init__()
-        self.setWindowTitle("AsyncioPySide6 Advanced Example")
+        self.setWindowTitle("pyside6-asyncplus Advanced Example")
         self.setGeometry(100, 100, 800, 600)
         
         # Create central widget and layout
@@ -63,7 +64,7 @@ class AdvancedExample(QMainWindow):
         self.completed_tasks = 0
         self.failed_tasks = 0
         
-        # Initialize AsyncioPySide6 with performance monitoring
+        # Initialize pyside6-asyncplus with performance monitoring
         self._setup_asyncio()
     
     def _create_status_section(self, parent_layout):
@@ -166,7 +167,7 @@ class AdvancedExample(QMainWindow):
         parent_layout.addWidget(log_group)
     
     def _setup_asyncio(self):
-        """Setup AsyncioPySide6 with performance monitoring."""
+        """Setup pyside6-asyncplus with performance monitoring."""
         # Enable performance monitoring
         config = get_config()
         config.enable_performance_monitoring = True
@@ -178,9 +179,9 @@ class AdvancedExample(QMainWindow):
         
         # Start performance monitoring (handle event loop issues gracefully)
         try:
-            from AsyncioPySide6.nvd.performance import start_performance_monitoring
+            from pyside6_asyncplus.nvd.performance import start_performance_monitoring
             start_performance_monitoring()
-            self.log("AsyncioPySide6 initialized with performance monitoring")
+            self.log("pyside6-asyncplus initialized with performance monitoring")
         except Exception as e:
             self.log(f"Performance monitoring initialization failed: {e}")
             self.log("Continuing without performance monitoring...")
@@ -196,7 +197,7 @@ class AdvancedExample(QMainWindow):
     def update_metrics(self):
         """Update performance metrics manually."""
         try:
-            from AsyncioPySide6.nvd.performance import get_performance_monitor
+            from pyside6_asyncplus.nvd.performance import get_performance_monitor
             monitor = get_performance_monitor()
 
             # Check if the monitor has the _has_event_loop method
@@ -214,7 +215,7 @@ class AdvancedExample(QMainWindow):
                     memory_usage_mb = memory_info.rss / 1024 / 1024
                     memory_percentage = (memory_info.rss / psutil.virtual_memory().total) * 100
                     
-                    from AsyncioPySide6.nvd.performance import PerformanceMetrics
+                    from pyside6_asyncplus.nvd.performance import PerformanceMetrics
                     initial_metric = PerformanceMetrics(
                         timestamp=time.time(),
                         active_tasks=self.active_tasks,
@@ -384,7 +385,7 @@ class AdvancedExample(QMainWindow):
             self.completed_tasks += 1
             self.log("Basic task completed in GUI thread")
         
-        AsyncioPySide6.runTask(self.basic_async_task())
+        run(self.basic_async_task())
         QTimer.singleShot(2500, on_complete)  # Schedule completion callback
     
     def run_progress_task(self):
@@ -416,7 +417,7 @@ class AdvancedExample(QMainWindow):
             self.progress_label.setText("Progress task completed!")
             self.log("Progress task completed in GUI thread")
         
-        AsyncioPySide6.runTaskWithProgress(
+        run_with_progress(
             self.progress_async_task(progress_callback),
             progress_callback
         )
@@ -436,7 +437,7 @@ class AdvancedExample(QMainWindow):
         
         # Run multiple concurrent tasks
         for i in range(num_tasks):
-            AsyncioPySide6.runTask(self.concurrent_task(i + 1))
+            run(self.concurrent_task(i + 1))
         
         # Schedule completion callback
         QTimer.singleShot(4000, on_complete)  # Schedule completion callback
@@ -455,7 +456,7 @@ class AdvancedExample(QMainWindow):
         
         # Run stress test tasks with retry logic
         for i in range(num_tasks):
-            AsyncioPySide6.runTaskWithRetry(
+            run_with_retry(
                 lambda: self.stress_task(i + 1),
                 max_retries=2,
                 retry_delay=0.5
@@ -488,8 +489,9 @@ def main():
     example = AdvancedExample()
     example.show()
     
-    # Run the application
-    sys.exit(app.exec())
+    # Run the application with pyside6-asyncplus
+    with async_app:
+        sys.exit(app.exec())
 
 
 if __name__ == "__main__":

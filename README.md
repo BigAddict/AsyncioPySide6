@@ -1,14 +1,17 @@
-# AsyncioPySide6
+# pyside6-asyncplus
 
-Enhanced QtAsyncio integration with advanced async features for PySide6 applications.
+Native asyncio support for PySide6 with advanced features like retry, timeout, monitoring, and CI/CD integration.
+
+**This is a maintained fork of [nguyenvuduc/AsyncioPySide6](https://github.com/nguyenvuduc/AsyncioPySide6).**
+**Original author: @nguyenvuduc — Licensed under BSD-3-Clause.**
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PySide6](https://img.shields.io/badge/PySide6-6.9.1+-green.svg)](https://pypi.org/project/PySide6/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](LICENSE)
 
 ## Overview
 
-AsyncioPySide6 provides an enhanced wrapper around PySide6's built-in QtAsyncio that adds advanced features like timeout handling, retry logic, performance monitoring, and comprehensive error handling while maintaining full compatibility with QtAsyncio.
+pyside6-asyncplus provides an enhanced wrapper around PySide6's built-in QtAsyncio that adds advanced features like timeout handling, retry logic, performance monitoring, and comprehensive error handling while maintaining full compatibility with QtAsyncio.
 
 ### Key Features
 
@@ -28,11 +31,17 @@ AsyncioPySide6 provides an enhanced wrapper around PySide6's built-in QtAsyncio 
 - Python 3.11+
 - PySide6 6.9.1+
 
+### Install from PyPI
+
+```bash
+pip install pyside6-asyncplus
+```
+
 ### Install from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/AsyncioPySide6.git
+git clone https://github.com/BigAddict/AsyncioPySide6.git
 cd AsyncioPySide6
 
 # Create virtual environment
@@ -53,20 +62,22 @@ pip install -e .
 ```python
 import asyncio
 from PySide6.QtWidgets import QApplication
-from AsyncioPySide6 import AsyncioPySide6
+from pyside6_asyncplus.app import run
 
 # Create Qt application
 app = QApplication([])
 
-# Use AsyncioPySide6 with context manager
-with AsyncioPySide6():
+# Use pyside6_asyncplus with context manager
+from pyside6_asyncplus.app import app as async_app
+
+with async_app:
     # Run async tasks
     async def my_task():
         await asyncio.sleep(2)
         print("Task completed!")
     
     # Run the task
-    AsyncioPySide6.runTask(my_task())
+    run(my_task())
     
     # Run the application
     app.exec()
@@ -76,17 +87,18 @@ with AsyncioPySide6():
 
 ```python
 import asyncio
+import random
 from PySide6.QtWidgets import QApplication
-from AsyncioPySide6 import AsyncioPySide6
+from pyside6_asyncplus.app import app as async_app, run_with_timeout, run_with_retry, run_with_progress
 
 app = QApplication([])
 
-with AsyncioPySide6():
+with async_app:
     # Task with timeout
     async def timeout_task():
         await asyncio.sleep(5)  # Will timeout after 3 seconds
     
-    AsyncioPySide6.runTaskWithTimeout(timeout_task(), timeout=3.0)
+    run_with_timeout(timeout_task(), 3.0)
     
     # Task with retry logic
     async def retry_task():
@@ -95,7 +107,7 @@ with AsyncioPySide6():
             raise Exception("Random failure")
         return "Success!"
     
-    AsyncioPySide6.runTaskWithRetry(
+    run_with_retry(
         lambda: retry_task(),
         max_retries=3,
         retry_delay=1.0
@@ -110,46 +122,60 @@ with AsyncioPySide6():
             await asyncio.sleep(0.5)
             # Progress updates are automatically marshaled to GUI thread
     
-    AsyncioPySide6.runTaskWithProgress(progress_task(), progress_callback)
+    run_with_progress(progress_task(), progress_callback)
     
     app.exec()
 ```
 
 ## API Reference
 
-### Core Classes
+### Core Functions
 
-#### `AsyncioPySide6`
+#### `run(coro)`
+Run a basic async task.
 
-The main class that provides enhanced QtAsyncio integration.
+#### `run_with_timeout(coro, timeout)`
+Run task with timeout.
+
+#### `run_with_retry(coro_func, max_retries=3, retry_delay=1.0)`
+Run task with retry logic.
+
+#### `run_with_progress(coro, progress_callback=None)`
+Run task with thread-safe progress tracking.
+
+#### `invoke_in_gui_thread(gui_object, callable)`
+Safe GUI thread invocation.
+
+#### `is_initialized()`
+Check if initialized.
+
+#### `get_health_status()`
+Get system health status.
+
+#### `get_task_count()`
+Get active task count.
+
+### App Class
 
 ```python
+from pyside6_asyncplus.app import App
+
 # Context manager usage
-with AsyncioPySide6():
+with App():
     # Your async code here
     pass
 
 # Manual initialization
-AsyncioPySide6.initialize()
+app = App()
+app.__enter__()
 # ... your code ...
-AsyncioPySide6.dispose()
+app.__exit__(None, None, None)
 ```
-
-#### Static Methods
-
-- `runTask(coro)` - Run a basic async task
-- `runTaskWithTimeout(coro, timeout)` - Run task with timeout
-- `runTaskWithRetry(coro_func, max_retries, retry_delay)` - Run task with retry logic
-- `runTaskWithProgress(coro, progress_callback)` - Run task with thread-safe progress tracking
-- `invokeInGuiThread(gui_object, callable)` - Safe GUI thread invocation
-- `is_initialized()` - Check if initialized
-- `get_health_status()` - Get system health status with fallback metrics
-- `get_task_count()` - Get active task count
 
 ### Configuration
 
 ```python
-from AsyncioPySide6 import get_config, set_config
+from pyside6_asyncplus import get_config, set_config
 
 # Get current configuration
 config = get_config()
@@ -165,13 +191,13 @@ set_config(config)
 
 ### Environment Variables
 
-You can configure AsyncioPySide6 using environment variables:
+You can configure pyside6-asyncplus using environment variables:
 
 ```bash
-export ASYNCIOPYSIDE6_TASK_TIMEOUT=60.0
-export ASYNCIOPYSIDE6_MAX_RETRIES=5
-export ASYNCIOPYSIDE6_ENABLE_PERFORMANCE_MONITORING=true
-export ASYNCIOPYSIDE6_ENABLE_DEBUG_MODE=true
+export PYSIDE6_ASYNCPLUS_TASK_TIMEOUT=60.0
+export PYSIDE6_ASYNCPLUS_MAX_RETRIES=5
+export PYSIDE6_ASYNCPLUS_ENABLE_PERFORMANCE_MONITORING=true
+export PYSIDE6_ASYNCPLUS_ENABLE_DEBUG_MODE=true
 ```
 
 ## Examples
@@ -198,7 +224,7 @@ See `examples/advanced_example.py` for a comprehensive demonstration of:
 
 ### QtAsyncio Integration
 
-AsyncioPySide6 is built on top of PySide6's native QtAsyncio module, providing:
+pyside6-asyncplus is built on top of PySide6's native QtAsyncio module, providing:
 
 - **Native Integration** - Uses QtAsyncio's event loop management
 - **Enhanced Features** - Adds advanced capabilities on top of QtAsyncio
@@ -208,8 +234,8 @@ AsyncioPySide6 is built on top of PySide6's native QtAsyncio module, providing:
 
 ### Feature Comparison
 
-| Feature | QtAsyncio | AsyncioPySide6 |
-|---------|-----------|----------------|
+| Feature | QtAsyncio | pyside6-asyncplus |
+|---------|-----------|-------------------|
 | Basic async support | ✅ | ✅ |
 | Timeout handling | ❌ | ✅ |
 | Retry logic | ❌ | ✅ |
@@ -223,7 +249,7 @@ AsyncioPySide6 is built on top of PySide6's native QtAsyncio module, providing:
 
 ## Performance
 
-AsyncioPySide6 is designed for high performance:
+pyside6-asyncplus is designed for high performance:
 
 - **Minimal Overhead** - Direct QtAsyncio integration
 - **Efficient Task Management** - Optimized task scheduling
@@ -276,7 +302,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests/
 
 # Run linting
-python -m flake8 AsyncioPySide6/
+python -m flake8 pyside6_asyncplus/
 
 # Generate documentation
 python -m sphinx docs/ docs/_build/html
@@ -284,18 +310,20 @@ python -m sphinx docs/ docs/_build/html
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
 - PySide6 team for the excellent Qt bindings
 - Python asyncio community for async/await patterns
 - Qt team for QtAsyncio integration
+- Original author @nguyenvuduc for the base implementation
 
 ## Changelog
 
-### Version 2.1.0
+### Version 0.1.0
 
+- **Initial Release** - Fork of AsyncioPySide6 with enhanced features
 - **Thread-Safe Progress Tracking** - Automatic GUI thread marshaling for progress updates
 - **Enhanced Performance Monitoring** - Robust fallback mechanisms and improved metrics
 - **Improved Error Handling** - Graceful degradation and better error recovery
@@ -303,20 +331,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Better Health Status** - Meaningful thresholds and fallback metrics
 - **Memory Management** - Improved memory tracking and display
 - **GUI Thread Safety** - All GUI updates properly marshaled to main thread
-
-### Version 2.0.0
-
-- **Major Refactor** - Complete rewrite using QtAsyncio as base
-- **Simplified Architecture** - Removed complex thread/timer implementations
-- **Enhanced Features** - Advanced task management and monitoring
-- **Better Documentation** - Comprehensive docstrings for Sphinx
-- **Clean Examples** - Simplified example structure
-- **Performance Improvements** - Direct QtAsyncio integration
-- **Backward Compatibility** - Maintained existing API compatibility
-
-### Version 1.0.0
-
-- Initial release with thread-based async implementation
-- Basic task management features
-- Configuration system
-- Performance monitoring
+- **PyPI Ready** - Complete package structure for PyPI distribution

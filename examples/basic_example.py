@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Basic Example - AsyncioPySide6 with QtAsyncio Integration.
+Basic Example - pyside6-asyncplus with QtAsyncio Integration.
 
-This example demonstrates the basic usage of AsyncioPySide6 with QtAsyncio integration.
+This example demonstrates the basic usage of pyside6-asyncplus with QtAsyncio integration.
 It shows how to run simple async tasks, handle timeouts, and use retry logic.
 """
 
@@ -11,14 +11,14 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QTextEdit
 from PySide6.QtCore import QTimer
 
-# Import our enhanced AsyncioPySide6
+# Import our enhanced pyside6-asyncplus
 sys.path.append('..')
-from AsyncioPySide6 import AsyncioPySide6
+from pyside6_asyncplus.app import app as async_app, run, run_with_timeout, run_with_retry, invoke_in_gui_thread
 
 
 class BasicExample(QMainWindow):
     """
-    Basic example demonstrating AsyncioPySide6 with QtAsyncio integration.
+    Basic example demonstrating pyside6-asyncplus with QtAsyncio integration.
     
     This example shows:
     - Basic async task execution
@@ -30,7 +30,7 @@ class BasicExample(QMainWindow):
     def __init__(self):
         """Initialize the basic example window."""
         super().__init__()
-        self.setWindowTitle("AsyncioPySide6 Basic Example")
+        self.setWindowTitle("pyside6-asyncplus Basic Example")
         self.setGeometry(100, 100, 600, 400)
         
         # Create central widget and layout
@@ -131,11 +131,11 @@ class BasicExample(QMainWindow):
             self.status_label.setText("Status: Basic task completed!")
             self.log("GUI updated: Basic task completed!")
         
-        # Run the task using AsyncioPySide6
-        AsyncioPySide6.runTask(self.basic_async_task())
+        # Run the task using pyside6-asyncplus
+        run(self.basic_async_task())
         
         # Update GUI after task
-        AsyncioPySide6.invokeInGuiThread(self, update_gui)
+        invoke_in_gui_thread(self, update_gui)
     
     def run_timeout_task(self):
         """Run a task with timeout handling."""
@@ -148,10 +148,10 @@ class BasicExample(QMainWindow):
             self.log("GUI updated: Timeout task completed!")
         
         # Run the task with timeout (3 seconds)
-        AsyncioPySide6.runTaskWithTimeout(self.timeout_async_task(), timeout=3.0)
+        run_with_timeout(self.timeout_async_task(), 3.0)
         
         # Update GUI after task
-        AsyncioPySide6.invokeInGuiThread(self, update_gui)
+        invoke_in_gui_thread(self, update_gui)
     
     def run_retry_task(self):
         """Run a task with retry logic."""
@@ -164,14 +164,14 @@ class BasicExample(QMainWindow):
             self.log("GUI updated: Retry task completed!")
         
         # Run the task with retry logic (3 retries, 1 second delay)
-        AsyncioPySide6.runTaskWithRetry(
+        run_with_retry(
             lambda: self.retry_async_task(),
             max_retries=3,
             retry_delay=1.0
         )
         
         # Update GUI after task
-        AsyncioPySide6.invokeInGuiThread(self, update_gui)
+        invoke_in_gui_thread(self, update_gui)
 
 
 def main():
@@ -182,8 +182,9 @@ def main():
     example = BasicExample()
     example.show()
     
-    # Run the application
-    sys.exit(app.exec())
+    # Run the application with pyside6-asyncplus
+    with async_app:
+        sys.exit(app.exec())
 
 
 if __name__ == "__main__":

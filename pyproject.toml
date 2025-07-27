@@ -3,18 +3,18 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "AsyncioPySide6"
-version = "2.1.0"
-description = "Enhanced QtAsyncio integration with advanced async features for PySide6 applications"
+name = "pyside6-asyncplus"
+version = "0.1.0"
+description = "Native asyncio support for PySide6 with advanced features like retry, timeout, monitoring, and CI/CD integration."
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "BSD-3-Clause"}
 authors = [
-    {name = "AsyncioPySide6 Team", email = "team@asynciopyside6.com"}
+    {name = "David N. Maina(BigAddict)", email = "davidnjihia536@gmail.com"}
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
@@ -26,7 +26,6 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     "PySide6>=6.9.1",
-    "psutil>=5.8.0",
 ]
 
 [project.optional-dependencies]
@@ -45,14 +44,14 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-username/AsyncioPySide6"
-Documentation = "https://asynciopyside6.readthedocs.io/"
-Repository = "https://github.com/your-username/AsyncioPySide6"
-"Bug Tracker" = "https://github.com/your-username/AsyncioPySide6/issues"
+Homepage = "https://github.com/BigAddict/AsyncioPySide6"
+Documentation = "https://bigaddict.github.io/AsyncioPySide6/"
+Source = "https://github.com/BigAddict/AsyncioPySide6"
+Original = "https://github.com/nguyenvuduc/AsyncioPySide6"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["AsyncioPySide6*"]
+include = ["pyside6_asyncplus*"]
 
 [tool.black]
 line-length = 127
@@ -100,14 +99,14 @@ strict_equality = true
 minversion = "6.0"
 addopts = "-ra -q --strict-markers"
 testpaths = [
-    "AsyncioPySide6/tests",
+    "pyside6_asyncplus/tests",
 ]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.coverage.run]
-source = ["AsyncioPySide6"]
+source = ["pyside6_asyncplus"]
 omit = [
     "*/tests/*",
     "*/test_*",

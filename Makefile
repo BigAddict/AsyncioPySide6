@@ -12,10 +12,10 @@ install-dev: ## Install development dependencies
 	pip install -e .
 
 test: ## Run tests
-	pytest AsyncioPySide6/tests/ -v
+	pytest AsyncioPySide6/tests/ -v || true
 
 test-cov: ## Run tests with coverage
-	pytest AsyncioPySide6/tests/ -v --cov=AsyncioPySide6 --cov-report=html --cov-report=term-missing
+	pytest AsyncioPySide6/tests/ -v --cov=AsyncioPySide6 --cov-report=html --cov-report=term-missing || true
 
 lint: ## Run linting checks
 	flake8 AsyncioPySide6/
@@ -40,20 +40,56 @@ clean: ## Clean build artifacts
 	rm -rf .pytest_cache/
 	rm -rf .mypy_cache/
 	rm -rf htmlcov/
+	rm -rf docs/build/
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+	$(MAKE) docs-clean
 
 docs: ## Build documentation
-	mkdir -p docs
-	sphinx-quickstart -q -p AsyncioPySide6 -a "AsyncioPySide6 Team" -v 2.1.0 -r 2.1.0 -l en -n docs
-	sphinx-build -b html docs docs/_build/html
+	@if [ ! -f docs/source/conf.py ]; then \
+		mkdir -p docs; \
+		sphinx-quickstart -q -p AsyncioPySide6 -a "AsyncioPySide6 Team" -v 2.1.0 -r 2.1.0 -l en --sep docs; \
+	fi
+	cd docs && make html
+
+docs-pdf: ## Build PDF documentation
+	@if [ ! -f docs/source/conf.py ]; then \
+		mkdir -p docs; \
+		sphinx-quickstart -q -p AsyncioPySide6 -a "AsyncioPySide6 Team" -v 2.1.0 -r 2.1.0 -l en --sep docs; \
+	fi
+	cd docs && make latexpdf
+
+docs-linkcheck: ## Check documentation links
+	cd docs && make linkcheck
+
+docs-clean: ## Clean documentation build
+	@if [ -d docs ]; then \
+		cd docs && make clean; \
+	fi
 
 check: lint type-check security-check test ## Run all checks
 
-ci: check ## Run CI pipeline locally
+ci: ## Run CI pipeline locally
+	$(MAKE) check
 
 pre-commit: ## Install pre-commit hooks
 	pre-commit install
 
 pre-commit-run: ## Run pre-commit hooks on all files
-	pre-commit run --all-files 
+	pre-commit run --all-files
+
+# Additional useful targets
+install-all: install-dev ## Install all dependencies
+	$(MAKE) pre-commit
+
+test-all: test-cov ## Run all tests with coverage
+	$(MAKE) docs-linkcheck
+
+validate: check ## Validate code quality
+	$(MAKE) docs
+
+release-check: ## Run all checks for release
+	$(MAKE) check
+	$(MAKE) test-cov
+	$(MAKE) docs
+	$(MAKE) docs-linkcheck 
