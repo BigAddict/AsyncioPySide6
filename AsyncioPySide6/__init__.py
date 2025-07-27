@@ -19,27 +19,29 @@ Example:
     ...     AsyncioPySide6.runTask(my_coroutine())
 """
 
+from typing import Any, Dict
+
 from .nvd.AsyncioPySide6 import AsyncioPySide6, use_asyncio
-from .nvd.config import get_config, set_config, reset_config, AsyncioPySide6Config
+from .nvd.config import AsyncioPySide6Config, get_config, reset_config, set_config
 from .nvd.exceptions import (
     AsyncioPySide6Error,
-    EventLoopError,
-    ThreadSafetyError,
-    InitializationError,
-    ShutdownError,
-    TaskTimeoutError,
-    ResourceExhaustedError,
     ConfigurationError,
+    EventLoopError,
+    InitializationError,
+    MemoryError,
+    ResourceExhaustedError,
+    ShutdownError,
     TaskExecutionError,
-    MemoryError
+    TaskTimeoutError,
+    ThreadSafetyError,
 )
 from .nvd.performance import (
+    get_health_status,
     get_performance_monitor,
+    record_task_completion,
+    record_task_start,
     start_performance_monitoring,
     stop_performance_monitoring,
-    record_task_start,
-    record_task_completion,
-    get_health_status
 )
 
 # Version information
@@ -49,58 +51,55 @@ __description__ = "Enhanced QtAsyncio integration with advanced async features"
 
 __all__ = [
     # Core library
-    'AsyncioPySide6',
-    'use_asyncio',
-    'get_config',
-    'set_config', 
-    'reset_config',
-    'AsyncioPySide6Config',
-    
+    "AsyncioPySide6",
+    "use_asyncio",
+    "get_config",
+    "set_config",
+    "reset_config",
+    "AsyncioPySide6Config",
     # Exceptions
-    'AsyncioPySide6Error',
-    'EventLoopError',
-    'ThreadSafetyError',
-    'InitializationError',
-    'ShutdownError',
-    'TaskTimeoutError',
-    'ResourceExhaustedError',
-    'ConfigurationError',
-    'TaskExecutionError',
-    'MemoryError',
-    
+    "AsyncioPySide6Error",
+    "EventLoopError",
+    "ThreadSafetyError",
+    "InitializationError",
+    "ShutdownError",
+    "TaskTimeoutError",
+    "ResourceExhaustedError",
+    "ConfigurationError",
+    "TaskExecutionError",
+    "MemoryError",
     # Performance monitoring
-    'get_performance_monitor',
-    'start_performance_monitoring',
-    'stop_performance_monitoring',
-    'record_task_start',
-    'record_task_completion',
-    'get_health_status',
-    
+    "get_performance_monitor",
+    "start_performance_monitoring",
+    "stop_performance_monitoring",
+    "record_task_start",
+    "record_task_completion",
+    "get_health_status",
     # Version information
-    '__version__',
-    '__author__',
-    '__description__'
+    "__version__",
+    "__author__",
+    "__description__",
 ]
 
 
-def get_version():
+def get_version() -> str:
     """Get the library version.
-    
+
     Returns:
         str: The current version of AsyncioPySide6
     """
     return __version__
 
 
-def get_async_backends():
+def get_async_backends() -> Dict[str, Any]:
     """
     Get information about available async backends.
-    
+
     Returns:
         dict: Dictionary with information about available backends and their capabilities
     """
     backends = {}
-    
+
     # Our enhanced implementation
     backends["asyncio_pyside6"] = {
         "available": True,
@@ -118,77 +117,67 @@ def get_async_backends():
             "gui_thread_safety",
             "comprehensive_error_handling",
             "configuration_system",
-            "backward_compatibility"
-        ]
+            "backward_compatibility",
+        ],
     }
-    
+
     return backends
 
 
-def recommend_async_approach():
+def recommend_async_approach() -> Dict[str, Any]:
     """
     Recommend the best async approach based on available backends and requirements.
-    
+
     Returns:
         dict: Dictionary with recommendations for different use cases
     """
     backends = get_async_backends()
-    
+
     recommendations = {
-        "simple_usage": {
-            "recommendation": "asyncio_pyside6",
-            "reason": "Simple async tasks with QtAsyncio integration"
-        },
+        "simple_usage": {"recommendation": "asyncio_pyside6", "reason": "Simple async tasks with QtAsyncio integration"},
         "production_usage": {
             "recommendation": "asyncio_pyside6",
-            "reason": "Production applications need comprehensive error handling and monitoring"
+            "reason": "Production applications need comprehensive error handling and monitoring",
         },
         "advanced_features": {
             "recommendation": "asyncio_pyside6",
-            "reason": "Advanced features like timeout, retry, and progress tracking"
+            "reason": "Advanced features like timeout, retry, and progress tracking",
         },
-        "gui_applications": {
-            "recommendation": "asyncio_pyside6",
-            "reason": "Seamless integration with Qt GUI applications"
-        }
+        "gui_applications": {"recommendation": "asyncio_pyside6", "reason": "Seamless integration with Qt GUI applications"},
     }
-    
+
     return recommendations
 
 
-def is_qtasyncio_available():
+def is_qtasyncio_available() -> bool:
     """
     Check if QtAsyncio is available in the current PySide6 installation.
-    
+
     Returns:
         bool: True if QtAsyncio is available, False otherwise
     """
     try:
         import PySide6.QtAsyncio as QtAsyncio
+
         return True
     except ImportError:
         return False
 
 
-def get_qtasyncio_info():
+def get_qtasyncio_info() -> Dict[str, Any]:
     """
     Get information about QtAsyncio availability and features.
-    
+
     Returns:
         dict: Dictionary with QtAsyncio information
     """
     qtasyncio_available = is_qtasyncio_available()
-    
+
     info = {
         "available": qtasyncio_available,
         "name": "PySide6 QtAsyncio",
         "description": "Built-in async support for PySide6",
-        "features": [
-            "basic_async",
-            "qt_integration",
-            "signal_handling",
-            "debug_mode"
-        ] if qtasyncio_available else []
+        "features": ["basic_async", "qt_integration", "signal_handling", "debug_mode"] if qtasyncio_available else [],
     }
-    
+
     return info

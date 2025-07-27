@@ -15,7 +15,4 @@ Usage:
 """
 
 # Test modules
-__all__ = [
-    'test_core',
-    'test_performance'
-]
+__all__ = ["test_core", "test_performance"]
